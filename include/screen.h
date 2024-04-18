@@ -6,8 +6,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 
-#define SCREEN_EMPTY " "
+
+#define SCREEN_EMPTY ' '
 
 typedef enum screen_constants_t
 {
@@ -35,6 +37,8 @@ int        screen_destroy (screen_t ** pp_screen);
 
 int screen_update (screen_t * p_screen);
 int screen_modify (screen_t * p_screen, point_t pos, char new_char);
+int screen_shift_h(screen_t * p_screen, int src_row, int dst_row);
+int screen_shift_v(screen_t * p_screen, int src_col, int dst_col);
 
 #endif // SCREEN_H
 

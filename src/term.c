@@ -30,7 +30,7 @@ int term_uncook (void)
     int flags = fcntl(STDIN_FILENO, F_GETFL, 0);
     fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
 
-    // term_hide_cursor();
+    term_hide_cursor();
 EXIT:
     return (status);
 }
@@ -48,7 +48,7 @@ int term_cook (void)
     // set stdin back to blocking
     int flags = fcntl(STDIN_FILENO, F_GETFL, 0);
     fcntl(STDIN_FILENO, F_SETFL, flags & ~O_NONBLOCK);
-    // term_show_cursor();
+    term_show_cursor();
 
     status = 0;
 
@@ -82,3 +82,14 @@ void term_show_cursor (void)
 }
 
 /*** end of file ***/
+
+// int main(void)
+// {
+//     term_uncook();
+//     term_clear();
+//     term_gotoxy(3, 3);
+//     (void)fprintf(stdout, "x");
+//     fflush(stdout);
+//     sleep(1);
+//     term_cook();
+// }

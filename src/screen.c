@@ -35,12 +35,20 @@ screen_t * screen_init (int cols, int rows)
     term_uncook();
     term_clear();
 
-    for (int i = 0; i < p_screen->cols * p_screen->rows; i++)
-    {
-        p_screen->pp_buffer_arr[i] = '.';
-    }
+    // for (int i = 0; i < p_screen->cols * p_screen->rows; i++)
+    // {
+    //     p_screen->pp_buffer_arr[i] = '.';
+    // }
 
-    screen_update(p_screen);
+    for (int y = 0; y < p_screen->rows; y++)
+    {
+        for (int x = 0; x < p_screen->cols; x++)
+        {
+            screen_modify(p_screen, (point_t) { .x = x, .y = y }, '.');
+            screen_update(p_screen);
+            usleep(500);
+        }
+    }
 
     goto EXIT;
 
@@ -80,7 +88,8 @@ EXIT:
 
 int screen_update (screen_t * p_screen)
 {
-    int status = S_ERR;
+    int  status     = S_ERR;
+    bool is_changed = false;
 
     if (NULL == p_screen)
     {
@@ -96,16 +105,18 @@ int screen_update (screen_t * p_screen)
             if (p_screen->pp_buffer_arr[acc_ptr]
                 != p_screen->pp_display_arr[acc_ptr])
             {
-                (void)fprintf(stderr, "Updating at x,y: %d, %d\n", col, row);
+                // (void)fprintf(stderr, "Updating at x,y: %d, %d\n", col, row);
                 term_gotoxy(col + 1, row + 1);
                 (void)fprintf(stdout, "%c", p_screen->pp_buffer_arr[acc_ptr]);
-                // update the character here
+                fflush(stdout);
             }
-            // printf("%c ", p_screen->pp_display_arr[acc_ptr]);
         }
     }
 
     // if needs to update, display new screen, copy display to buffer
+    memcpy(p_screen->pp_display_arr,
+           p_screen->pp_buffer_arr,
+           p_screen->cols * p_screen->rows * sizeof(char));
 
     status = S_OK;
 
@@ -130,12 +141,84 @@ int screen_modify (screen_t * p_screen, point_t pos, char new_char)
     int acc_ptr = (pos.y * p_screen->cols) + pos.x;
 
     p_screen->pp_buffer_arr[acc_ptr] = new_char;
+    (void)fprintf(stderr, "%c", p_screen->pp_buffer_arr[acc_ptr]);
 
     status = S_OK;
 
 EXIT:
     return (status);
 }
+
+int screen_shift_h (screen_t * p_screen, int src_row, int dst_row)
+{
+    int status = S_ERR;
+
+    if (NULL == p_screen)
+    {
+        goto EXIT;
+    }
+
+    if (p_screen->rows < src_row || p_screen->rows < dst_row)
+    {
+        goto EXIT;
+    }
+
+    for (int x = 0; x < p_screen->cols; x++)
+    {
+        int acc_ptr = (src_row * p_screen->cols) + x;
+        (void)fprintf(stderr,
+                      "acc_ptr: %d, char: %c\n",
+                      acc_ptr,
+                      p_screen->pp_buffer_arr[acc_ptr]);
+        screen_modify(p_screen,
+                      (point_t) { .x = x, .y = dst_row },
+                      p_screen->pp_buffer_arr[acc_ptr]);
+        screen_modify(
+            p_screen, (point_t) { .x = x, .y = src_row }, SCREEN_EMPTY);
+    }
+
+    screen_update(p_screen);
+
+EXIT:
+    return (status);
+}
+
+// int screen_shift_v(screen_t * p_screen, int src_col, int dst_col)
+// {
+//     int status = S_ERR;
+
+//     if (NULL == p_screen)
+//     {
+//         goto EXIT;
+//     }
+
+//     if (p_screen->cols < src_col || p_screen->cols < dst_col)
+//     {
+//         goto EXIT;
+//     }
+
+//     for (int y = 0; y < p_screen->rows; y++)
+//     {
+//         // int acc_ptr = (row * p_screen->cols) + col;
+//         // int acc_ptr = (src_row * p_screen->cols) + x;
+
+//         int acc_ptr = (src_row * src_col) + y;
+//         (void)fprintf(stderr,
+//                       "acc_ptr: %d, char: %c\n",
+//                       acc_ptr,
+//                       p_screen->pp_buffer_arr[acc_ptr]);
+//         screen_modify(p_screen,
+//                       (point_t) { .x = x, .y = dst_row },
+//                       p_screen->pp_buffer_arr[acc_ptr]);
+//         screen_modify(
+//             p_screen, (point_t) { .x = x, .y = src_row }, SCREEN_EMPTY);
+//     }
+
+//     screen_update(p_screen);
+
+// EXIT:
+//     return (status);
+// }
 
 // int main (void)
 // {
