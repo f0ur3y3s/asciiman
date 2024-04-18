@@ -4,14 +4,17 @@
 #include <stdio.h>
 #include "point.h"
 
-#define LWALK_FIRST  " %c%c\n"
-#define LWALK_SECOND "%c %c\n"
-#define RWALK_FIRST  "%c%c\n"
-#define RWALK_SECOND "%c %c\n"
 #define HEAD_IDLE    " %c \n"
 #define BODY_IDLE    "%c%c%c\n"
+#define RWALK_FIRST  " %c%c\n"
+#define RWALK_SECOND "%c %c\n"
+#define LWALK_FIRST  "%c%c\n"
+#define LWALK_SECOND "%c %c\n"
 
-// player icons
+/**
+ * @brief Enum for player icons
+ *
+ */
 typedef enum player_limbs_t
 {
     HEAD              = 'o',
@@ -32,20 +35,16 @@ typedef enum player_limbs_t
     RLEG_JUMP_PREP    = '>',
 } player_limbs_t;
 
+/**
+ * @brief Enum for player directions
+ *
+ */
 typedef enum player_dir_t
 {
     DIR_LEFT  = -1,
     DIR_IDLE  = 0,
     DIR_RIGHT = 1,
 } player_dir_t;
-
-// typedef struct player_rep_t
-// {
-//     char rep[3][3];
-// } player_rep_t;
-
-// player rep is a minimum 9 bit value
-// 0b000000000
 
 // dir -1 is left and 1 is right
 // dir iter is used to switch legs, 0 for first, 1 for second

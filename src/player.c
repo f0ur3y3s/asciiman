@@ -13,6 +13,8 @@ player_t g_player = { .head     = { HEAD },
 void player_print (void)
 {
     // a player is formatted into a 3x3 grid
+    printf("%d %d\n", g_player.dir, g_player.dir_iter);
+    printf("x,y: %d, %d\n\n", g_player.pos.x, g_player.pos.y);
 
     printf(HEAD_IDLE, g_player.head[0]);
     printf(BODY_IDLE, g_player.larm[0], g_player.body[0], g_player.rarm[0]);
@@ -58,6 +60,11 @@ void player_print (void)
 
 void player_walk_right (void)
 {
+    if (DIR_RIGHT == g_player.dir)
+    {
+        g_player.pos.x++;
+    }
+
     // if player dir is already right, switch legs
     if (0 == g_player.dir_iter % 2)
     {
@@ -70,11 +77,16 @@ void player_walk_right (void)
         g_player.rleg[0] = RLEG_RWALK_SECOND;
     }
 
-    g_player.dir = DIR_LEFT;
+    g_player.dir = DIR_RIGHT;
 }
 
 void player_walk_left (void)
 {
+    if (DIR_LEFT == g_player.dir)
+    {
+        g_player.pos.x--;
+    }
+
     if (0 == g_player.dir_iter % 2)
     {
         g_player.lleg[0] = LLEG_LWALK_FIRST;
@@ -86,7 +98,7 @@ void player_walk_left (void)
         g_player.rleg[0] = RLEG_LWALK_SECOND;
     }
 
-    g_player.dir = DIR_RIGHT;
+    g_player.dir = DIR_LEFT;
 }
 
 void player_idle (void)
