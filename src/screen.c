@@ -35,17 +35,12 @@ screen_t * screen_init (int cols, int rows)
     term_uncook();
     term_clear();
 
-    // for (int i = 0; i < p_screen->cols * p_screen->rows; i++)
-    // {
-    //     p_screen->pp_buffer_arr[i] = '.';
-    // }
-
     for (int y = 0; y < p_screen->rows; y++)
     {
         for (int x = 0; x < p_screen->cols; x++)
         {
             screen_modify(p_screen, (point_t) { .x = x, .y = y }, '.');
-            screen_update(p_screen);
+            screen_display(p_screen);
             usleep(500);
         }
     }
@@ -86,7 +81,7 @@ EXIT:
     return (status);
 }
 
-int screen_update (screen_t * p_screen)
+int screen_display (screen_t * p_screen)
 {
     int  status     = S_ERR;
     bool is_changed = false;
@@ -140,6 +135,11 @@ int screen_modify (screen_t * p_screen, point_t pos, char new_char)
 
     int acc_ptr = (pos.y * p_screen->cols) + pos.x;
 
+    if (new_char == 0x00)
+    {
+        new_char = SCREEN_EMPTY;
+    }
+
     p_screen->pp_buffer_arr[acc_ptr] = new_char;
     (void)fprintf(stderr, "%c", p_screen->pp_buffer_arr[acc_ptr]);
 
@@ -166,10 +166,6 @@ int screen_shift_h (screen_t * p_screen, int src_row, int dst_row)
     for (int x = 0; x < p_screen->cols; x++)
     {
         int acc_ptr = (src_row * p_screen->cols) + x;
-        (void)fprintf(stderr,
-                      "acc_ptr: %d, char: %c\n",
-                      acc_ptr,
-                      p_screen->pp_buffer_arr[acc_ptr]);
         screen_modify(p_screen,
                       (point_t) { .x = x, .y = dst_row },
                       p_screen->pp_buffer_arr[acc_ptr]);
@@ -177,48 +173,62 @@ int screen_shift_h (screen_t * p_screen, int src_row, int dst_row)
             p_screen, (point_t) { .x = x, .y = src_row }, SCREEN_EMPTY);
     }
 
-    screen_update(p_screen);
+    status = screen_display(p_screen);
 
 EXIT:
     return (status);
 }
 
-// int screen_shift_v(screen_t * p_screen, int src_col, int dst_col)
-// {
-//     int status = S_ERR;
+int screen_shift_v (screen_t * p_screen, int src_col, int dst_col)
+{
+    int status = S_ERR;
 
-//     if (NULL == p_screen)
-//     {
-//         goto EXIT;
-//     }
+    if (NULL == p_screen)
+    {
+        goto EXIT;
+    }
 
-//     if (p_screen->cols < src_col || p_screen->cols < dst_col)
-//     {
-//         goto EXIT;
-//     }
+    if (p_screen->cols < src_col || p_screen->cols < dst_col)
+    {
+        goto EXIT;
+    }
 
-//     for (int y = 0; y < p_screen->rows; y++)
-//     {
-//         // int acc_ptr = (row * p_screen->cols) + col;
-//         // int acc_ptr = (src_row * p_screen->cols) + x;
+    for (int y = 0; y < p_screen->rows; y++)
+    {
+        int acc_ptr = (y * p_screen->cols) + src_col;
+        screen_modify(p_screen,
+                      (point_t) { .x = dst_col, .y = y },
+                      p_screen->pp_buffer_arr[acc_ptr]);
+        screen_modify(
+            p_screen, (point_t) { .x = src_col, .y = y }, SCREEN_EMPTY);
+    }
 
-//         int acc_ptr = (src_row * src_col) + y;
-//         (void)fprintf(stderr,
-//                       "acc_ptr: %d, char: %c\n",
-//                       acc_ptr,
-//                       p_screen->pp_buffer_arr[acc_ptr]);
-//         screen_modify(p_screen,
-//                       (point_t) { .x = x, .y = dst_row },
-//                       p_screen->pp_buffer_arr[acc_ptr]);
-//         screen_modify(
-//             p_screen, (point_t) { .x = x, .y = src_row }, SCREEN_EMPTY);
-//     }
+    status = screen_display(p_screen);
 
-//     screen_update(p_screen);
+EXIT:
+    return (status);
+}
 
-// EXIT:
-//     return (status);
-// }
+int screen_clear (screen_t * p_screen)
+{
+    int status = S_ERR;
+
+    if (NULL == p_screen)
+    {
+        goto EXIT;
+    }
+
+    for (int i = 0; i < p_screen->cols * p_screen->rows; i++)
+    {
+        p_screen->pp_buffer_arr[i] = SCREEN_EMPTY;
+    }
+
+    status = screen_display(p_screen);
+
+EXIT:
+    return (status);
+
+}
 
 // int main (void)
 // {
@@ -237,5 +247,5 @@ EXIT:
 //         }
 //     }
 
-//     screen_update(p_screen);
+//     screen_display(p_screen);
 // }

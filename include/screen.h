@@ -8,7 +8,6 @@
 #include <stdio.h>
 #include <string.h>
 
-
 #define SCREEN_EMPTY ' '
 
 typedef enum screen_constants_t
@@ -34,11 +33,12 @@ typedef struct screen_t
 
 screen_t * screen_init (int cols, int rows);
 int        screen_destroy (screen_t ** pp_screen);
-
-int screen_update (screen_t * p_screen);
-int screen_modify (screen_t * p_screen, point_t pos, char new_char);
-int screen_shift_h(screen_t * p_screen, int src_row, int dst_row);
-int screen_shift_v(screen_t * p_screen, int src_col, int dst_col);
+int        screen_display (screen_t * p_screen);
+int        screen_render (screen_t * p_screen);
+int        screen_modify (screen_t * p_screen, point_t pos, char new_char);
+int        screen_shift_h (screen_t * p_screen, int src_row, int dst_row);
+int        screen_shift_v (screen_t * p_screen, int src_col, int dst_col);
+int        screen_clear (screen_t * p_screen);
 
 #endif // SCREEN_H
 

@@ -4,12 +4,17 @@
 #include <stdio.h>
 #include "point.h"
 
-#define HEAD_IDLE    " %c \n"
-#define BODY_IDLE    "%c%c%c\n"
+// #define HEAD_IDLE    " %c \n"
+// #define BODY_IDLE    "%c%c%c\n"
 #define RWALK_FIRST  " %c%c\n"
 #define RWALK_SECOND "%c %c\n"
 #define LWALK_FIRST  "%c%c\n"
 #define LWALK_SECOND "%c %c\n"
+
+// #define RWALK_FIRST  0b011
+// #define RWALK_SECOND 0b101
+// #define LWALK_FIRST  0b110
+// #define LWALK_SECOND 0b101
 
 /**
  * @brief Enum for player icons
@@ -61,10 +66,14 @@ typedef struct player_t
     point_t pos;
 } player_t;
 
-void player_print (void);
-void player_walk_right (void);
-void player_walk_left (void);
-void player_idle (void);
+void       player_init (void);
+void       player_print (void);
+void       player_step (void);
+void       player_walk_right (void);
+void       player_walk_left (void);
+void       player_idle (void);
+char *     player_export (void);
+player_t * player_get (void);
 
 #endif // PLAYER_H
 
