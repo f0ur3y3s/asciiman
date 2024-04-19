@@ -1,12 +1,7 @@
 #include "../include/main.h"
 
-typedef enum movement_keys_t
-{
-    MOVEMENT_KEY_UP    = 119,
-    MOVEMENT_KEY_DOWN  = 115,
-    MOVEMENT_KEY_RIGHT = 100,
-    MOVEMENT_KEY_LEFT  = 97
-} movement_keys_t;
+// This is where the main game should go however it is being used to test the
+// player animations
 
 static _Atomic bool gb_run = true;
 static void         sighandler (int signum);
@@ -34,124 +29,52 @@ int main (void)
     screen_t * p_screen = screen_init(width, height);
     screen_clear(p_screen);
     player_init();
-    // char * p_player_arr = player_export();
 
-    // for (int y = 0; y < 3; y++)
-    // {
-    //     for (int x = 0; x < 3; x++)
-    //     {
-    //         screen_modify(p_screen,
-    //                       (point_t) { .x = x, .y = y },
-    //                       p_player_arr[(y * 3) + x]);
-    //     }
-    // }
+    int total_offset = 0;
 
-    // screen_display(p_screen);
+    char idle[3]   = { LLEG_IDLE, ' ', RLEG_IDLE };
+    char rwalk1[3] = { ' ', RWALK_BENT, RLEG_IDLE };
+    char rwalk2[3] = { ' ', LEG_CENTER, RLEG_IDLE };
+    char rwalk3[3] = { ' ', LEG_CENTER, RWALK_BENT };
 
-    // screen_clear(p_screen);
+    player_walk_anim_t rwalk_anim[4] = {
+        { idle, (point_t) { .x = 1, .y = 0 } },
+        { rwalk1, (point_t) { .x = 0, .y = 0 } },
+        { rwalk2, (point_t) { .x = 1, .y = 0 } },
+        { rwalk3, (point_t) { .x = 0, .y = 0 } },
+    };
+
+    // player_walk_anim_t lwalk_anim[4] = {
+    //     { idle, (point_t) { .x = 1, .y = 0 } },
+    //     { lwalk1, (point_t) { .x = 0, .y = 0 } },
+    //     { lwalk2, (point_t) { .x = 1, .y = 0 } },
+    //     { lwalk3, (point_t) { .x = 0, .y = 0 } },
+    // };
 
     while (gb_run)
     {
-        char    chr[3]     = { 0 };
-        ssize_t bytes_read = 0;
-        bytes_read         = read(STDIN_FILENO, &chr, 3);
-
-        if (0 > bytes_read)
+        for (int i = 0; i < 4; i++)
         {
-            player_idle();
-            player_t * p_player     = player_get();
-            char *     p_player_arr = player_export();
+            total_offset += rwalk_anim[i].offset.x;
 
-            for (int y = 0; y < 3; y++)
-            {
-                for (int x = 0; x < 3; x++)
-                {
-                    screen_modify(
-                        p_screen,
-                        (point_t) { .x = x + p_player->pos.x, .y = y },
-                        p_player_arr[(y * 3) + x]);
-                }
-            }
-
-            screen_display(p_screen);
-            continue;
-        }
-
-        if (3 == chr[0])
-        {
-            printf("Exiting...\n");
-            break;
-        }
-
-        switch (chr[0])
-        {
-            case MOVEMENT_KEY_UP:
-                break;
-            case MOVEMENT_KEY_DOWN:
-                break;
-            case MOVEMENT_KEY_RIGHT:
-                player_walk_right();
-                break;
-            case MOVEMENT_KEY_LEFT:
-                player_walk_left();
-                break;
-            default:
-                // player_idle();
-                continue;
-        }
-
-        screen_clear(p_screen);
-        player_t * p_player     = player_get();
-        char *     p_player_arr = player_export();
-
-        for (int y = 0; y < 3; y++)
-        {
             for (int x = 0; x < 3; x++)
             {
                 screen_modify(p_screen,
-                              (point_t) { .x = x + p_player->pos.x, .y = y },
-                              p_player_arr[(y * 3) + x]);
+                              (point_t) { .x = total_offset + x, .y = 0 },
+                              rwalk_anim[i].p_arr[(0 * 3) + x]);
             }
+
+            screen_display(p_screen);
+            usleep(200000);
+            screen_clear(p_screen);
         }
 
-        screen_display(p_screen);
-
-        // screen_display(p_screen);
-        usleep(100000);
+        if (total_offset > width/2)
+        {
+            total_offset = 0;
+        }
     }
 
     screen_destroy(&p_screen);
-    // player_print();
-    // sleep(1);
-    // player_walk_right();
-    // term_clear();
-    // player_print();
-    // sleep(1);
-    // term_clear();
-    // player_print();
-    // sleep(1);
-    // term_clear();
-    // player_print();
-    // sleep(1);
-    // term_clear();
-    // player_print();
-    // sleep(1);
-    // player_walk_left();
-    // term_clear();
-    // player_print();
-    // sleep(1);
-    // term_clear();
-    // player_print();
-    // sleep(1);
-    // term_clear();
-    // player_print();
-    // sleep(1);
-    // term_clear();
-    // player_print();
-    // sleep(1);
-    // player_idle();
-    // term_clear();
-    // player_print();
-    // sleep(1);
     return 0;
 }

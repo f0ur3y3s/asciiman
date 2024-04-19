@@ -12,6 +12,7 @@ player_t g_player = { .head     = { HEAD },
 
 char gp_player_arr[9] = { 0 };
 
+
 // void player_step (void)
 // {
 //     // a player is formatted into a 3x3 grid
@@ -79,62 +80,62 @@ void player_init (void)
     gp_player_arr[8] = g_player.rleg[0];
 }
 
-void player_walk_right (void)
-{
-    if (DIR_RIGHT == g_player.dir)
-    {
-        g_player.pos.x++;
-    }
+// void player_walk_right (void)
+// {
+//     if (DIR_RIGHT == g_player.dir)
+//     {
+//         g_player.pos.x++;
+//     }
 
-    // if player dir is already right, switch legs
-    if (0 == g_player.dir_iter % 2)
-    {
-        g_player.lleg[0] = LLEG_RWALK_FIRST;
-        g_player.rleg[0] = RLEG_RWALK_FIRST;
-        gp_player_arr[6] = 0;
-        gp_player_arr[7] = g_player.lleg[0];
-        gp_player_arr[8] = g_player.rleg[0];
-    }
-    else
-    {
-        g_player.lleg[0] = LLEG_RWALK_SECOND;
-        g_player.rleg[0] = RLEG_RWALK_SECOND;
-        gp_player_arr[6] = g_player.lleg[0];
-        gp_player_arr[7] = 0;
-        gp_player_arr[8] = g_player.rleg[0];
-    }
+//     // if player dir is already right, switch legs
+//     if (0 == g_player.dir_iter % 2)
+//     {
+//         g_player.lleg[0] = LLEG_RWALK_FIRST;
+//         g_player.rleg[0] = RLEG_RWALK_FIRST;
+//         gp_player_arr[6] = 0;
+//         gp_player_arr[7] = g_player.lleg[0];
+//         gp_player_arr[8] = g_player.rleg[0];
+//     }
+//     else
+//     {
+//         g_player.lleg[0] = LLEG_RWALK_SECOND;
+//         g_player.rleg[0] = RLEG_RWALK_SECOND;
+//         gp_player_arr[6] = g_player.lleg[0];
+//         gp_player_arr[7] = 0;
+//         gp_player_arr[8] = g_player.rleg[0];
+//     }
 
-    g_player.dir_iter = (g_player.dir_iter + 1) % 2;
-    g_player.dir      = DIR_RIGHT;
-}
+//     g_player.dir_iter = (g_player.dir_iter + 1) % 2;
+//     g_player.dir      = DIR_RIGHT;
+// }
 
-void player_walk_left (void)
-{
-    if (DIR_LEFT == g_player.dir)
-    {
-        g_player.pos.x--;
-    }
+// void player_walk_left (void)
+// {
+//     if (DIR_LEFT == g_player.dir)
+//     {
+//         g_player.pos.x--;
+//     }
 
-    if (0 == g_player.dir_iter % 2)
-    {
-        g_player.lleg[0] = LLEG_LWALK_FIRST;
-        g_player.rleg[0] = RLEG_LWALK_FIRST;
-        gp_player_arr[6] = g_player.lleg[0];
-        gp_player_arr[7] = g_player.rleg[0];
-        gp_player_arr[8] = 0;
-    }
-    else
-    {
-        g_player.lleg[0] = LLEG_LWALK_SECOND;
-        g_player.rleg[0] = RLEG_LWALK_SECOND;
-        gp_player_arr[6] = g_player.lleg[0];
-        gp_player_arr[7] = 0;
-        gp_player_arr[8] = g_player.rleg[0];
-    }
+//     if (0 == g_player.dir_iter % 2)
+//     {
+//         g_player.lleg[0] = LLEG_LWALK_FIRST;
+//         g_player.rleg[0] = RLEG_LWALK_FIRST;
+//         gp_player_arr[6] = g_player.lleg[0];
+//         gp_player_arr[7] = g_player.rleg[0];
+//         gp_player_arr[8] = 0;
+//     }
+//     else
+//     {
+//         g_player.lleg[0] = LLEG_LWALK_SECOND;
+//         g_player.rleg[0] = RLEG_LWALK_SECOND;
+//         gp_player_arr[6] = g_player.lleg[0];
+//         gp_player_arr[7] = 0;
+//         gp_player_arr[8] = g_player.rleg[0];
+//     }
 
-    g_player.dir_iter = (g_player.dir_iter + 1) % 2;
-    g_player.dir      = DIR_LEFT;
-}
+//     g_player.dir_iter = (g_player.dir_iter + 1) % 2;
+//     g_player.dir      = DIR_LEFT;
+// }
 
 void player_idle (void)
 {

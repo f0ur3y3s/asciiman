@@ -2,15 +2,14 @@
 - [Screen](#screen)
   - [Layers](#layers)
 - [Character](#character)
-  - [Base](#base)
-  - [Right walking first](#right-walking-first)
-  - [Right walking second](#right-walking-second)
-  - [Left walking first](#left-walking-first)
-  - [Left walking second](#left-walking-second)
+  - [Idle](#idle)
+  - [Right walking](#right-walking)
+  - [Left walking](#left-walking)
   - [Jump Prep](#jump-prep)
   - [Mid air jump right](#mid-air-jump-right)
   - [Mid air jump left](#mid-air-jump-left)
   - [Attack](#attack)
+  - [Holding heavy weapon](#holding-heavy-weapon)
 
 # Ascii Stickman
 
@@ -35,75 +34,95 @@ The rendering order is as follows:
 
 # Character
 
-## Base
+## Idle
+
 ```
- O
+ o
 /|\
 / \
 ```
 
-## Right walking first
+For the animations, could create a circularly linked list of the different states.
+
+## Right walking
 
 ```
- O
-/|└
+ o
+/|\
+/ \
+ o
+/|\
  >\
+ o
+/|\
+ |\
+ o
+/|\
+/ \
+ o
+/|\
+/|
+ o
+/|\
+ |>
 ```
 
-## Right walking second
+## Left walking
 
 ```
- O
-<|\
-/ >
-```
-
-
-
-## Left walking first
-
-```
- O
-┘|\
+ o
+/|\
+/ \
+ o
+/|\
 /<
-```
-
-## Left walking second
-
-```
- O
-/|>
-< \
+ o
+/|\
+/|
+ o
+/|\
+<|
 ```
 
 ## Jump Prep
 
 ```
- O
-/|\
-< >
+\o/
+<'>
 ```
 
 ## Mid air jump right
 
 ```
- O
-v|v
- >>
+\o/
+ )
+//
 ```
 
 ## Mid air jump left
 
 ```
- O
-v|v
-<<
+\o/
+ (
+ \\
 ```
 
 ## Attack
 
 ```
- O
+ o
 `)\
 />
 ```
+
+## Holding heavy weapon
+
+```
+     /\
+    / /
+ o_/)/
+ \/
+/ \
+```
+
+
