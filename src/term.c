@@ -64,7 +64,7 @@ void term_clear (void)
 
 void term_gotoxy (int x, int y)
 {
-    (void)fprintf(stderr, "Moved at x,y: %d, %d\n", x, y);
+    // (void)fprintf(stderr, "Moved at x,y: %d, %d\n", x, y);
     (void)fprintf(stdout, "\033[%d;%dH", y, x);
     fflush(stdout);
 }

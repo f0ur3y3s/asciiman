@@ -6,10 +6,17 @@
   - [Right walking](#right-walking)
   - [Left walking](#left-walking)
   - [Jump Prep](#jump-prep)
+  - [Mid air jump idle](#mid-air-jump-idle)
   - [Mid air jump right](#mid-air-jump-right)
   - [Mid air jump left](#mid-air-jump-left)
   - [Attack](#attack)
   - [Holding heavy weapon](#holding-heavy-weapon)
+- [Future Work](#future-work)
+- [Animation format](#animation-format)
+- [Character matrix](#character-matrix)
+- [Animation format](#animation-format-1)
+  - [Frame 1](#frame-1)
+  - [Frame 2](#frame-2)
 
 # Ascii Stickman
 
@@ -65,6 +72,23 @@ original four
  |>
 ```
 
+extended ascii with wchar
+
+```
+ o
+/|\
+/ \
+ o
+/|\
+ ┘\
+ o
+/|\
+ |\
+ o
+/|\
+ |┘
+```
+
 extended set
 
 ```
@@ -104,12 +128,43 @@ extended set
 /|\
 <|
 ```
+extended ascii
+
+```
+ o
+/|\
+/ \
+ o
+/|\
+/└
+ o
+/|\
+/|
+ o
+/|\
+└|
+```
 
 ## Jump Prep
 
 ```
+ o
+/|\
+/ \
+
+_o_
+<'>
+
 \o/
 <'>
+```
+
+## Mid air jump idle
+
+```
+\o/
+ |
+/ \
 ```
 
 ## Mid air jump right
@@ -117,7 +172,7 @@ extended set
 ```
 \o/
  )
-//
+/┘
 ```
 
 ## Mid air jump left
@@ -125,7 +180,7 @@ extended set
 ```
 \o/
  (
- \\
+ └\
 ```
 
 ## Attack
@@ -133,7 +188,7 @@ extended set
 ```
  o
 `)\
-/>
+/┘
 ```
 
 ## Holding heavy weapon
@@ -146,4 +201,69 @@ extended set
 / \
 ```
 
+# Future Work
 
+- Create file format to allow new icons and animation frames
+- Abstract player type to be an entity type
+
+# Animation format
+
+# Character matrix
+```
+|     |     |     |     |     |     |
+| 0,0 | 1,0 | 2,0 | 3,0 | 4,0 | 5,0 |
+|_____|_____|_____|_____|_____|_____|
+|     |     |     |     |     |     |
+| 0,1 | 1,1 | 2,1 | 3,1 | 4,1 | 5,1 |
+|_____|_____|_____|_____|_____|_____|
+|     |     |     |     |     |     |
+| 0,2 | 1,2 | 2,2 | 3,2 | 4,2 | 5,2 |
+|_____|_____|_____|_____|_____|_____|
+|     |     |     |     |     |     |
+| 0,3 | 1,3 | 2,3 | 3,3 | 4,3 | 5,3 |
+|_____|_____|_____|_____|_____|_____|
+|     |     |     |     |     |     |
+| 0,4 | 1,4 | 2,4 | 3,4 | 4,4 | 5,4 |
+|_____|_____|_____|_____|_____|_____|
+```
+
+# Animation format
+## Frame 1
+```
+TARGET 1,1 - 2,2
+|     |     |     |     |     |     |
+| 0,0 | 1,0 | 2,0 | 3,0 | 4,0 | 5,0 |
+|_____|_____|_____|_____|_____|_____|
+|     |     |     |     |     |     |
+| 0,1 |  X  |  X  | 3,1 | 4,1 | 5,1 |
+|_____|_____|_____|_____|_____|_____|
+|     |     |     |     |     |     |
+| 0,2 |  X  |  X  | 3,2 | 4,2 | 5,2 |
+|_____|_____|_____|_____|_____|_____|
+|     |     |     |     |     |     |
+| 0,3 | 1,3 | 2,3 | 3,3 | 4,3 | 5,3 |
+|_____|_____|_____|_____|_____|_____|
+|     |     |     |     |     |     |
+| 0,4 | 1,4 | 2,4 | 3,4 | 4,4 | 5,4 |
+|_____|_____|_____|_____|_____|_____|
+```
+
+## Frame 2
+```
+TARGET 0,3 - 5,4
+|     |     |     |     |     |     |
+| 0,0 | 1,0 | 2,0 | 3,0 | 4,0 | 5,0 |
+|_____|_____|_____|_____|_____|_____|
+|     |     |     |     |     |     |
+| 0,1 |  X  |  X  | 3,1 | 4,1 | 5,1 |
+|_____|_____|_____|_____|_____|_____|
+|     |     |     |     |     |     |
+| 0,2 |  X  |  X  | 3,2 | 4,2 | 5,2 |
+|_____|_____|_____|_____|_____|_____|
+|     |     |     |     |     |     |
+|  X  |  X  |  X  |  X  |  X  |  X  |
+|_____|_____|_____|_____|_____|_____|
+|     |     |     |     |     |     |
+|  X  |  X  |  X  |  X  |  X  |  X  |
+|_____|_____|_____|_____|_____|_____|
+```

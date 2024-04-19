@@ -20,54 +20,97 @@ static void install_sighandler (void)
     sigaction(SIGINT, &sigaction_handler, NULL);
 }
 
+typedef enum movement_keys_t
+{
+    MOVEMENT_KEY_UP    = 119,
+    MOVEMENT_KEY_DOWN  = 115,
+    MOVEMENT_KEY_RIGHT = 100,
+    MOVEMENT_KEY_LEFT  = 97
+} movement_keys_t;
+
 int main (void)
 {
     install_sighandler();
 
     int        width    = 100;
     int        height   = 10;
-    screen_t * p_screen = screen_init(width, height);
-    screen_clear(p_screen);
+    screen_init(width, height);
+    screen_clear();
     player_init();
-
-    int total_offset = 0;
-
-    char idle[3]   = { LLEG_IDLE, ' ', RLEG_IDLE };
-    char rwalk1[3] = { ' ', RWALK_BENT, RLEG_IDLE };
-    char rwalk2[3] = { ' ', LEG_CENTER, RLEG_IDLE };
-    char rwalk3[3] = { ' ', LEG_CENTER, RWALK_BENT };
-
-    player_walk_anim_t rwalk_anim[4] = {
-        { idle, (point_t) { .x = 1, .y = 0 } },
-        { rwalk1, (point_t) { .x = 0, .y = 0 } },
-        { rwalk2, (point_t) { .x = 1, .y = 0 } },
-        { rwalk3, (point_t) { .x = 0, .y = 0 } },
-    };
+    player_walk_right();
 
     while (gb_run)
     {
-        for (int i = 0; i < 4; i++)
-        {
-            total_offset += rwalk_anim[i].offset.x;
+        char    chr[3]      = { 0 };
+        ssize_t bytes_read  = 0;
+        bytes_read          = read(STDIN_FILENO, &chr, 3);
+        player_t * p_player = player_get();
 
-            for (int x = 0; x < 3; x++)
+        if (0 > bytes_read)
+        {
+            player_idle();
+            // continue;
+        }
+        else
+        {
+            if (3 == chr[0])
             {
-                screen_modify(p_screen,
-                              (point_t) { .x = total_offset + x, .y = 0 },
-                              rwalk_anim[i].p_arr[(0 * 3) + x]);
+                fprintf(stdout, "Exiting...\n");
+                break;
             }
 
-            screen_display(p_screen);
-            usleep(80000);
-            screen_clear(p_screen);
+            switch (chr[0])
+            {
+                case MOVEMENT_KEY_UP:
+                    if (p_player->dir != DIR_IDLE)
+                        player_idle();
+                    break;
+                case MOVEMENT_KEY_DOWN:
+                    if (p_player->dir != DIR_IDLE)
+                        player_idle();
+                    break;
+                case MOVEMENT_KEY_RIGHT:
+                    if (p_player->dir != DIR_RIGHT)
+                    {
+                        player_walk_right();
+                    }
+                    break;
+                case MOVEMENT_KEY_LEFT:
+                    if (p_player->dir != DIR_LEFT)
+                    {
+
+                        player_walk_left();
+                    }
+                    break;
+                default:
+                    if (p_player->dir != DIR_IDLE)
+                        player_idle();
+                    continue;
+            }
         }
 
-        if (total_offset > width/2)
+        player_step();
+        screen_clear();
+
+        p_player            = player_get();
+        char * p_player_arr = player_export();
+
+        for (int y = 0; y < 3; y++)
         {
-            total_offset = 0;
+            for (int x = 0; x < 3; x++)
+            {
+                screen_modify(
+                    (point_t) { .x = x + p_player->pos.x, .y = y + height - 3 },
+                    p_player_arr[(y * 3) + x]);
+            }
         }
+
+        screen_display();
+
+        usleep(80000);
     }
 
-    screen_destroy(&p_screen);
+    player_destroy();
+    screen_destroy();
     return 0;
 }
