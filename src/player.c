@@ -1,17 +1,17 @@
 #include "../include/player.h"
 
-player_t g_player = { .head     = { HEAD },
-                      .body     = { BODY },
-                      .larm     = { LARM_IDLE },
-                      .rarm     = { RARM_IDLE },
-                      .lleg     = { LLEG_IDLE },
-                      .rleg     = { RLEG_IDLE },
-                      .dir      = DIR_IDLE,
-                      .dir_iter = 0,
-                      .pos      = { .x = 0, .y = 0 } };
+player_t g_player = { .head        = { HEAD },
+                      .body        = { BODY },
+                      .larm        = { LARM_IDLE },
+                      .rarm        = { RARM_IDLE },
+                      .lleg        = { LLEG_IDLE },
+                      .rleg        = { RLEG_IDLE },
+                      .dir         = DIR_IDLE,
+                      .pos         = { .x = 0, .y = 0 },
+                      .p_anim_csll = NULL };
+//   .dir_iter = 0,
 
 char gp_player_arr[9] = { 0 };
-
 
 // void player_step (void)
 // {
@@ -69,6 +69,13 @@ char gp_player_arr[9] = { 0 };
 
 void player_init (void)
 {
+    // initialize the csll of player animations
+    g_player.p_anim_csll = csll_create(NULL);
+
+    // add idle animation to csll
+    player_walk_anim_t * p_idle_anim = calloc(1, sizeof(player_walk_anim_t));
+
+
     gp_player_arr[0] = 0;
     gp_player_arr[1] = g_player.head[0];
     gp_player_arr[2] = 0;
@@ -78,6 +85,11 @@ void player_init (void)
     gp_player_arr[6] = g_player.lleg[0];
     gp_player_arr[7] = 0;
     gp_player_arr[8] = g_player.rleg[0];
+}
+
+void player_walk_right (void)
+{
+    // change animation call to walk right
 }
 
 // void player_walk_right (void)
@@ -109,6 +121,11 @@ void player_init (void)
 //     g_player.dir      = DIR_RIGHT;
 // }
 
+void player_walk_left (void)
+{
+    // change animation csll to walk left
+}
+
 // void player_walk_left (void)
 // {
 //     if (DIR_LEFT == g_player.dir)
@@ -139,13 +156,13 @@ void player_init (void)
 
 void player_idle (void)
 {
-    g_player.lleg[0]  = LLEG_IDLE;
-    g_player.rleg[0]  = RLEG_IDLE;
-    g_player.dir      = 0;
-    g_player.dir_iter = 0;
-    gp_player_arr[6]  = g_player.lleg[0];
-    gp_player_arr[7]  = 0;
-    gp_player_arr[8]  = g_player.rleg[0];
+    g_player.lleg[0] = LLEG_IDLE;
+    g_player.rleg[0] = RLEG_IDLE;
+    g_player.dir     = 0;
+    // g_player.dir_iter = 0;
+    gp_player_arr[6] = g_player.lleg[0];
+    gp_player_arr[7] = 0;
+    gp_player_arr[8] = g_player.rleg[0];
 }
 
 char * player_export (void)

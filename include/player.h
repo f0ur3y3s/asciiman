@@ -61,9 +61,15 @@ typedef struct player_t
     char    lleg[1];
     char    rleg[1];
     int     dir;
-    int     dir_iter;
+    // int     dir_iter;
     point_t pos;
+    csll_t * p_anim_csll;
 } player_t;
+
+typedef struct player_manager_t
+{
+    player_t player;
+} player_manager_t;
 
 void       player_init (void);
 void       player_print (void);

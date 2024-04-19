@@ -44,7 +44,28 @@ The rendering order is as follows:
 
 For the animations, could create a circularly linked list of the different states.
 
+Hold the animation csll in an singly linked list with a key loop function for the walking and idle animations. This allows multiple animation csll to be held by the player
+
 ## Right walking
+
+original four
+
+```
+ o
+/|\
+/ \
+ o
+/|\
+ >\
+ o
+/|\
+ |\
+ o
+/|\
+ |>
+```
+
+extended set
 
 ```
  o
@@ -61,7 +82,7 @@ For the animations, could create a circularly linked list of the different state
 / \
  o
 /|\
-/|
+/ >
  o
 /|\
  |>

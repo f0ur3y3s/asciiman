@@ -44,13 +44,6 @@ int main (void)
         { rwalk3, (point_t) { .x = 0, .y = 0 } },
     };
 
-    // player_walk_anim_t lwalk_anim[4] = {
-    //     { idle, (point_t) { .x = 1, .y = 0 } },
-    //     { lwalk1, (point_t) { .x = 0, .y = 0 } },
-    //     { lwalk2, (point_t) { .x = 1, .y = 0 } },
-    //     { lwalk3, (point_t) { .x = 0, .y = 0 } },
-    // };
-
     while (gb_run)
     {
         for (int i = 0; i < 4; i++)
@@ -65,7 +58,7 @@ int main (void)
             }
 
             screen_display(p_screen);
-            usleep(200000);
+            usleep(80000);
             screen_clear(p_screen);
         }
 
