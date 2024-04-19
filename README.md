@@ -12,9 +12,12 @@
   - [Attack](#attack)
   - [Holding heavy weapon](#holding-heavy-weapon)
 - [Future Work](#future-work)
-- [Animation format](#animation-format)
+- [Animation File Format](#animation-file-format)
+  - [Requirements](#requirements)
+  - [File](#file)
+  - [File Format Example](#file-format-example)
 - [Character matrix](#character-matrix)
-- [Animation format](#animation-format-1)
+- [Animation format](#animation-format)
   - [Frame 1](#frame-1)
   - [Frame 2](#frame-2)
 
@@ -206,9 +209,44 @@ _o_
 - Create file format to allow new icons and animation frames
 - Abstract player type to be an entity type
 
-# Animation format
+# Animation File Format
+
+## Requirements
+
+- entity name
+- size of entity as x,y
+- initial state of entity as full matrix representation
+- number of possible animations
+- animation cycles
+
+## File
+
+- needs to be txt editable
+
+## File Format Example
+
+NAME player
+SIZE 3,3
+INIT
+S
+ o
+/|\
+/ \
+E
+NUM_ANIM 3
+ANIM0
+S
+ o
+/|\
+/ \
+E
+ANIM1
+ANIM2
 
 # Character matrix
+
+variable size, 5x4 for example
+
 ```
 |     |     |     |     |     |     |
 | 0,0 | 1,0 | 2,0 | 3,0 | 4,0 | 5,0 |
@@ -228,6 +266,7 @@ _o_
 ```
 
 # Animation format
+
 ## Frame 1
 ```
 TARGET 1,1 - 2,2
