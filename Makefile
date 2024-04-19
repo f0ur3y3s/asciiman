@@ -1,7 +1,7 @@
 MAIN_NAME = main
 
 INCLUDES = include
-LINKS = -lpthread
+# LINKS = -lpthread
 CFLAGS = -Wall -I$(INCLUDES)
 
 CC = gcc
@@ -22,7 +22,7 @@ TEST_FLAGS = -I$(INCLUDES) $(DEBUG_FLAGS)
 
 all: $(OBJS) $(BIN)/$(MAIN_NAME)
 
-debug: CFLAGS += -g3 -DDEBUG
+debug: CFLAGS += -g -DDEBUG
 debug: all
 
 $(BIN)/$(MAIN_NAME): $(OBJS)

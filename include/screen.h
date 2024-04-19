@@ -31,14 +31,14 @@ typedef struct screen_t
     int    cols;
 } screen_t;
 
-screen_t * screen_init (int cols, int rows);
-int        screen_destroy (screen_t ** pp_screen);
-int        screen_display (screen_t * p_screen);
-int        screen_render (screen_t * p_screen);
-int        screen_modify (screen_t * p_screen, point_t pos, char new_char);
-int        screen_shift_h (screen_t * p_screen, int src_row, int dst_row);
-int        screen_shift_v (screen_t * p_screen, int src_col, int dst_col);
-int        screen_clear (screen_t * p_screen);
+int screen_init (int cols, int rows);
+int screen_destroy (void);
+int screen_display (void);
+int screen_modify (point_t pos, char new_char);
+int screen_shift_h (int src_row, int dst_row);
+int screen_shift_v (int src_col, int dst_col);
+int screen_clear (void);
+// int        screen_render (void);
 
 #endif // SCREEN_H
 
