@@ -4,35 +4,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2D Grid</title>
+    <title>Asciiman Animator</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="../static/base.css">
+
     <style>
         #grid-container {
-            display: grid;
-            grid-template-columns: repeat(10, 40px);
-            /* Adjust the number and size of columns */
-            gap: 0;
-            /* Set gap to zero */
             border-collapse: collapse;
-            /* Collapse borders */
+        }
+
+        .grid-row {
+            display: flex;
         }
 
         .cell {
             width: 40px;
             height: 40px;
-            border: 1px solid black;
-            /* Cell border */
+            border: 1px solid rgba(0, 0, 0, 0.1);
             display: flex;
             justify-content: center;
             align-items: center;
             box-sizing: border-box;
-            /* Include padding and border in element's total width and height */
             font-family: 'Courier New', monospace;
-
         }
 
         .cell input {
@@ -42,126 +40,404 @@
             text-align: center;
             font-size: 18px;
             background: transparent;
-            /* Transparent background */
             outline: none;
-            /* Remove outline */
             box-sizing: border-box;
-            /* Include padding and border in element's total width and height */
+            font-family: 'Courier New', monospace;
         }
 
         /* Remove default padding and margin from body and html */
-        body,
-        html {
+        * {
             margin: 0;
             padding: 0;
+        }
+
+        pre {
+            line-height: 1.25;
+            /* disable scrolling */
+            overflow: hidden;
+            font-family: monospace;
         }
     </style>
 </head>
 
-<body>
-    <div class="container">
-        <h1 class="text-center">2D Grid</h1>
-        <div id="grid-container"></div>
-        <div>
-            <button class="btn btn-success" id="add-row">Add Row</button>
-            <button class="btn btn-danger" id="remove-row">Remove Row</button>
+<body class="my-4">
+    <h1 class="text-center mb-4">Asciiman Animator</h1>
+    <div class="container d-grid gap-4">
+        <div class="card p-0">
+            <div class="card-body">
+                <div class="accordion accordion-flush" id="accordionInstructions">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                Instructions
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse"
+                            data-bs-parent="#accordionInstructions">
+                            <div class="accordion-body">
+                                <h3>
+                                    Frames
+                                </h3>
+                                <ul>
+                                    <li>Adding a new frame will insert the frame to the right of the current frame.</li>
+                                    <li>Deleting a frame will delete the current frame</li>
+                                </ul>
+
+                                <h3>
+                                    Grid
+                                </h3>
+                                <ul>
+                                    <li>Use the controls above to add or remove rows and columns from the grid.</li>
+                                    <li>Click on a cell to enter a character.</li>
+                                    <li>Use the arrow keys to navigate around the grid.</li>
+                                    <li>Use the preview section to see how the grid looks.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div>
-            <button class="btn btn-success" id="add-column">Add Column</button>
-            <button class="btn btn-danger" id="remove-column">Remove Column</button>
+        <div class="card p-4">
+            <h2 class="card-title">
+                Frames
+            </h2>
+            <div class="card-body d-grid">
+                <!-- total frames -->
+                <div>
+                    <div class="d-flex justify-content-between mb-0">
+                        <span>Total frames:</span>
+                        <span id="totalFrames">0</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Current frame:</span>
+                        <span id="totalFrames">0</span>
+                    </div>
+                </div>
+                <hr>
+                <div>
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-outline-danger" id="addFrameBtn"><i class="bi bi-dash"></i></button>
+                        <div>
+                            <button class="btn btn-primary" id="addFrameBtn">Prev</button>
+                            <button class="btn btn-primary" id="delFrameBtn">Next</button>
+                        </div>
+                        <button class="btn btn-outline-success" id="delFrameBtn"><i class="bi bi-plus"></i></button>
+                    </div>
+                </div>
+
+                <!-- <button class="mt-4 col-2 btn btn-danger" id="clearFramesBtn">Clear all frames</button> -->
+            </div>
+        </div>
+        <div class="card p-4">
+            <!-- x,y offset -->
+            <h2 class="card-title">
+                Editor
+            </h2>
+            <div class="card-body d-grid gap-2">
+                <div class="d-flex justify-content-between  align-items-center">
+                    <span>Offset delta</span>
+                    <div class="col-4">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">X</span>
+                            <input type="text" class="form-control" placeholder="X" aria-label="X_delta" value="0">
+                            <span class="input-group-text">Y</span>
+                            <input type="text" class="form-control" placeholder="Y" aria-label="Y_delta" value="0">
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-outline-danger" id="removeRowBtn"><i class="bi bi-arrow-up"></i></button>
+                    <span>Del/Add row</span>
+                    <button class="btn btn-outline-success" id="addRowBtn"><i class="bi bi-arrow-down"></i></button>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-outline-danger" id="removeColumnBtn"><i class="bi bi-arrow-left"></i></button>
+                    <span>Del/Add col</span>
+                    <button class="btn btn-outline-success" id="addColumnBtn"><i class="bi bi-arrow-right"></i></button>
+                </div>
+                <hr>
+                <div class="d-flex my-4 justify-content-center">
+                    <div id="grid-container">
+                        <div class="grid-row">
+                            <div class="cell"><input type="text" maxlength="1"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="col-2 btn btn-danger" id="clearGridBtn">Clear grid</button>
+            </div>
+        </div>
+        <div class="card p-4">
+            <h2 class="card-title">
+                Preview
+            </h2>
+            <div class="col-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">Animation time</span>
+                    <input type="text" class="form-control" placeholder="(milliseconds)" aria-label="animation_time"
+                        aria-describedby="basic-addon1" value="500000">
+                </div>
+            </div>
+            <button class="btn btn-primary col-2" id="">Play animation</button>
+
+            <div class="card-body">
+                <pre id="preview">
+                </pre>
+            </div>
         </div>
     </div>
 
-
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const gridSize = 10; // Number of rows and columns
-            const gridContainer = document.getElementById('grid-container');
+        var current_frame = 0;
+        var frames = [];
 
-            // Create grid
-            for (let i = 0; i < gridSize; i++) {
-                for (let j = 0; j < gridSize; j++) {
-                    const cell = document.createElement('div');
-                    cell.className = 'cell';
-                    const input = document.createElement('input');
-                    input.setAttribute('type', 'text');
-                    input.setAttribute('maxlength', '1'); // Limit to one character
-                    input.addEventListener('input', handleInputChange); // Handle input change
-                    cell.appendChild(input);
-                    gridContainer.appendChild(cell);
-                }
-            }
+        function addArrowKeyNavigation() {
+            const cells = document.querySelectorAll('.cell input');
+            cells.forEach((cell, i) => {
+                cell.addEventListener('keydown', (e) => {
+                    let targetCell;
+                    const numCells = document.querySelector('.grid-row').children.length;
+                    switch (e.key) {
+                        case 'ArrowUp':
+                            targetCell = cells[i - numCells];
+                            break;
+                        case 'ArrowDown':
+                            targetCell = cells[i + numCells];
+                            break;
+                        case 'ArrowLeft':
+                            targetCell = cells[i - 1];
+                            break;
+                        case 'ArrowRight':
+                            targetCell = cells[i + 1];
+                            break;
+                    }
+                    if (targetCell) {
+                        e.preventDefault();
+                        targetCell.focus();
+                    }
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const addRowBtn = document.getElementById('addRowBtn');
+            const removeRowBtn = document.getElementById('removeRowBtn');
+            const addColumnBtn = document.getElementById('addColumnBtn');
+            const removeColumnBtn = document.getElementById('removeColumnBtn');
+            const clearGridBtn = document.getElementById('clearGridBtn');
+
+            addRowBtn.addEventListener('click', () => addRow());
+            removeRowBtn.addEventListener('click', () => removeRow());
+            addColumnBtn.addEventListener('click', () => addColumn());
+            removeColumnBtn.addEventListener('click', () => removeColumn());
+            clearGridBtn.addEventListener('click', () => clearGrid());
         });
+
+        function clearGrid() {
+            console.log("clearing grid");
+            const cells = document.querySelectorAll('.cell input');
+            cells.forEach(cell => {
+                cell.value = '';
+            });
+
+            saveGridState();
+            updatePreview();
+            addArrowKeyNavigation();
+        }
+
+        function addRow() {
+            const gridContainer = document.getElementById('grid-container');
+            const firstRow = gridContainer.querySelector('.grid-row');
+            const numCells = firstRow.children.length;
+
+            const newRow = document.createElement('div');
+            newRow.className = 'grid-row';
+
+            for (let i = 0; i < numCells; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                const input = document.createElement('input');
+                input.setAttribute('type', 'text');
+                input.setAttribute('maxlength', '1');
+                input.addEventListener('input', handleInputChange);
+                cell.appendChild(input);
+                newRow.appendChild(cell);
+            }
+
+            gridContainer.appendChild(newRow);
+
+            saveGridState();
+            updatePreview();
+            addArrowKeyNavigation();
+        }
+
+        function removeRow() {
+            const gridContainer = document.getElementById('grid-container');
+            const rows = gridContainer.querySelectorAll('.grid-row');
+
+            if (rows.length > 1) {
+                gridContainer.removeChild(rows[rows.length - 1]);
+            }
+
+            saveGridState();
+            updatePreview();
+            addArrowKeyNavigation();
+        }
+
+        function addColumn() {
+            const rows = document.querySelectorAll('.grid-row');
+
+            rows.forEach(row => {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                const input = document.createElement('input');
+                input.setAttribute('type', 'text');
+                input.setAttribute('maxlength', '1');
+                input.addEventListener('input', handleInputChange);
+                cell.appendChild(input);
+                row.appendChild(cell);
+            });
+
+            saveGridState();
+            updatePreview();
+            addArrowKeyNavigation();
+        }
+
+        function removeColumn() {
+            const rows = document.querySelectorAll('.grid-row');
+
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('.cell');
+
+                if (cells.length > 1) {
+                    row.removeChild(cells[cells.length - 1]);
+                }
+            });
+
+            saveGridState();
+            updatePreview();
+            addArrowKeyNavigation();
+        }
 
         function handleInputChange(event) {
             const input = event.target;
-            const value = input.value.trim().toUpperCase(); // Convert to uppercase
+            const value = input.value.trim().toUpperCase();
             if (value.length > 1) {
-                input.value = value.slice(0, 1); // Limit to one character
+                input.value = value.slice(0, 1);
+            }
+
+            saveGridState();
+            updatePreview();
+            addArrowKeyNavigation();
+        }
+
+        function updatePreview() {
+            const preview = document.getElementById('preview');
+
+            // get the grid state from local storage
+            const savedGridJson = localStorage.getItem('gridState');
+            if (!savedGridJson) {
+                preview.textContent = '';
+                return;
+            }
+
+            const savedGrid = JSON.parse(savedGridJson);
+            let previewText = '';
+
+            savedGrid.forEach(row => {
+                row.forEach(cell => {
+                    previewText += cell;
+                });
+                previewText += '\n';
+            });
+
+            preview.textContent = previewText;
+        }
+
+        function saveGridState() {
+            const gridContainer = document.getElementById('grid-container');
+            const rows = gridContainer.querySelectorAll('.grid-row');
+            const matrix = [];
+
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('.cell');
+                const rowValues = [];
+
+                cells.forEach(cell => {
+                    if (cell.querySelector('input').value === '') {
+                        rowValues.push(' ');
+                    }
+                    else {
+                        rowValues.push(cell.querySelector('input').value);
+                    }
+                });
+
+                matrix.push(rowValues);
+            });
+
+            const matrixJson = JSON.stringify(matrix);
+            localStorage.setItem('gridState', matrixJson);
+        }
+
+        function addFrame() {
+
+        }
+
+        function delFrame() {
+
+        }
+
+        function loadFrames() {
+            // frames from local storage needs to be array of grid states
+            const savedFramesJson = localStorage.getItem('frames');
+            if (savedFramesJson) {
+                frames = JSON.parse(savedFramesJson);
+                console.log(frames);
             }
         }
 
-        document.getElementById('add-row').addEventListener('click', function () {
-            let grid = document.getElementById('grid-container');
-            let newRow = document.createElement('div');
-            newRow.className = 'row';
-            for (let i = 0; i < grid.children[0].children.length; i++) {
-                let newCell = document.createElement('div');
-                newCell.className = 'cell';
-                newRow.appendChild(newCell);
-            }
-            grid.appendChild(newRow);
-        });
+        function saveFrames() {
+            const framesJson = JSON.stringify(frames);
+            localStorage.setItem('frames', framesJson);
+        }
 
-        document.getElementById('remove-row').addEventListener('click', function () {
-            let grid = document.getElementById('grid-container');
-            if (grid.children.length > 0) {
-                grid.removeChild(grid.lastChild);
-            }
-        });
+        window.onload = function () {
+            const savedGridJson = localStorage.getItem('gridState');
+            if (savedGridJson) {
+                const savedGrid = JSON.parse(savedGridJson);
+                console.log(savedGrid);
+                const gridContainer = document.getElementById('grid-container');
+                gridContainer.innerHTML = '';
+                for (let i = 0; i < savedGrid.length; i++) {
+                    const row = document.createElement('div');
+                    row.className = 'grid-row';
+                    for (let j = 0; j < savedGrid[i].length; j++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'cell';
+                        const input = document.createElement('input');
+                        input.setAttribute('type', 'text');
+                        input.setAttribute('maxlength', '1');
+                        input.addEventListener('input', handleInputChange);
 
-        document.getElementById('add-column').addEventListener('click', function () {
-            let grid = document.getElementById('grid-container');
-            for (let i = 0; i < grid.children.length; i++) {
-                let newCell = document.createElement('div');
-                newCell.className = 'cell';
-                grid.children[i].appendChild(newCell);
-            }
-        });
-
-        document.getElementById('remove-column').addEventListener('click', function () {
-            let grid = document.getElementById('grid-container');
-            for (let i = 0; i < grid.children.length; i++) {
-                if (grid.children[i].children.length > 0) {
-                    grid.children[i].removeChild(grid.children[i].lastChild);
+                        if (savedGrid[i][j] === ' ') {
+                            input.value = '';
+                        }
+                        else {
+                            input.value = savedGrid[i][j];
+                        }
+                        cell.appendChild(input);
+                        row.appendChild(cell);
+                    }
+                    gridContainer.appendChild(row);
                 }
             }
-        });
 
+            updatePreview();
+            addArrowKeyNavigation();
+        };
     </script>
-
 </body>
 
 </html>
-
-
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asciiman Animation</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-</head>
-
-<body>
-
-</body>
-
-</html> -->

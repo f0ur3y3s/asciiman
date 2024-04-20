@@ -59,15 +59,21 @@ body {
 
 #chart {
     height: 60vh;
+
     /* Media query for iPhones or devices with smaller screen heights */
     @media screen and (max-height: 700px) {
         height: 60vh;
-        padding-bottom:2rem;
+        padding-bottom: 2rem;
     }
 }
 
-.dropdown-menu{
+.dropdown-menu {
     height: 50vh;
     /* height:300px; */
-    overflow-y:auto;
+    overflow-y: auto;
+}
+
+* {
+    transition: opacity 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
 }
