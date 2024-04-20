@@ -63,7 +63,7 @@
 <body class="my-4">
     <h1 class="text-center mb-4">Asciiman Animator</h1>
     <div class="container d-grid gap-4">
-        <div class="card p-0">
+        <div class="card">
             <div class="card-body">
                 <div class="accordion accordion-flush" id="accordionInstructions">
                     <div class="accordion-item">
@@ -112,18 +112,18 @@
                     </div>
                     <div class="d-flex justify-content-between">
                         <span>Current frame:</span>
-                        <span id="totalFrames">0</span>
+                        <span id="currentFrame">0</span>
                     </div>
                 </div>
                 <hr>
                 <div>
                     <div class="d-flex justify-content-between">
-                        <button class="btn btn-outline-danger" id="addFrameBtn"><i class="bi bi-dash"></i></button>
+                        <button class="btn btn-outline-danger" id="delFrameBtn"><i class="bi bi-dash"></i></button>
                         <div>
-                            <button class="btn btn-primary" id="addFrameBtn">Prev</button>
-                            <button class="btn btn-primary" id="delFrameBtn">Next</button>
+                            <button class="btn btn-primary" id="prevFrameBtn">Prev</button>
+                            <button class="btn btn-primary" id="nextFrameBtn">Next</button>
                         </div>
-                        <button class="btn btn-outline-success" id="delFrameBtn"><i class="bi bi-plus"></i></button>
+                        <button class="btn btn-outline-success" id="addFrameBtn"><i class="bi bi-plus"></i></button>
                     </div>
                 </div>
 
@@ -136,7 +136,7 @@
                 Editor
             </h2>
             <div class="card-body d-grid gap-2">
-                <div class="d-flex justify-content-between  align-items-center">
+                <div class="d-flex justify-content-between align-items-center">
                     <span>Offset delta</span>
                     <div class="col-4">
                         <div class="input-group mb-3">
@@ -153,7 +153,8 @@
                     <button class="btn btn-outline-success" id="addRowBtn"><i class="bi bi-arrow-down"></i></button>
                 </div>
                 <div class="d-flex justify-content-between align-items-center">
-                    <button class="btn btn-outline-danger" id="removeColumnBtn"><i class="bi bi-arrow-left"></i></button>
+                    <button class="btn btn-outline-danger" id="removeColumnBtn"><i
+                            class="bi bi-arrow-left"></i></button>
                     <span>Del/Add col</span>
                     <button class="btn btn-outline-success" id="addColumnBtn"><i class="bi bi-arrow-right"></i></button>
                 </div>
@@ -166,278 +167,29 @@
                     </div>
                 </div>
 
-                <button class="col-2 btn btn-danger" id="clearGridBtn">Clear grid</button>
+                <button class="col-2 btn btn-outline-danger" id="clearGridBtn">Clear grid</button>
             </div>
         </div>
         <div class="card p-4">
             <h2 class="card-title">
                 Preview
             </h2>
-            <div class="col-4">
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1">Animation time</span>
-                    <input type="text" class="form-control" placeholder="(milliseconds)" aria-label="animation_time"
-                        aria-describedby="basic-addon1" value="500000">
+            <div class="card-body d-grid gap-2">
+                <div class="d-flex justify-content-between">
+                    <span>Animation time (milliseconds)</span>
+                    <input class="form-text" type="text" placeholder="(milliseconds)" value="500000">
                 </div>
+                <button class="col-2 btn btn-primary" id="">Play animation</button>
+                <hr>
             </div>
-            <button class="btn btn-primary col-2" id="">Play animation</button>
-
-            <div class="card-body">
+            <div class="d-flex justify-content-center">
                 <pre id="preview">
                 </pre>
             </div>
         </div>
     </div>
 
-    <script>
-        var current_frame = 0;
-        var frames = [];
-
-        function addArrowKeyNavigation() {
-            const cells = document.querySelectorAll('.cell input');
-            cells.forEach((cell, i) => {
-                cell.addEventListener('keydown', (e) => {
-                    let targetCell;
-                    const numCells = document.querySelector('.grid-row').children.length;
-                    switch (e.key) {
-                        case 'ArrowUp':
-                            targetCell = cells[i - numCells];
-                            break;
-                        case 'ArrowDown':
-                            targetCell = cells[i + numCells];
-                            break;
-                        case 'ArrowLeft':
-                            targetCell = cells[i - 1];
-                            break;
-                        case 'ArrowRight':
-                            targetCell = cells[i + 1];
-                            break;
-                    }
-                    if (targetCell) {
-                        e.preventDefault();
-                        targetCell.focus();
-                    }
-                });
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const addRowBtn = document.getElementById('addRowBtn');
-            const removeRowBtn = document.getElementById('removeRowBtn');
-            const addColumnBtn = document.getElementById('addColumnBtn');
-            const removeColumnBtn = document.getElementById('removeColumnBtn');
-            const clearGridBtn = document.getElementById('clearGridBtn');
-
-            addRowBtn.addEventListener('click', () => addRow());
-            removeRowBtn.addEventListener('click', () => removeRow());
-            addColumnBtn.addEventListener('click', () => addColumn());
-            removeColumnBtn.addEventListener('click', () => removeColumn());
-            clearGridBtn.addEventListener('click', () => clearGrid());
-        });
-
-        function clearGrid() {
-            console.log("clearing grid");
-            const cells = document.querySelectorAll('.cell input');
-            cells.forEach(cell => {
-                cell.value = '';
-            });
-
-            saveGridState();
-            updatePreview();
-            addArrowKeyNavigation();
-        }
-
-        function addRow() {
-            const gridContainer = document.getElementById('grid-container');
-            const firstRow = gridContainer.querySelector('.grid-row');
-            const numCells = firstRow.children.length;
-
-            const newRow = document.createElement('div');
-            newRow.className = 'grid-row';
-
-            for (let i = 0; i < numCells; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'cell';
-                const input = document.createElement('input');
-                input.setAttribute('type', 'text');
-                input.setAttribute('maxlength', '1');
-                input.addEventListener('input', handleInputChange);
-                cell.appendChild(input);
-                newRow.appendChild(cell);
-            }
-
-            gridContainer.appendChild(newRow);
-
-            saveGridState();
-            updatePreview();
-            addArrowKeyNavigation();
-        }
-
-        function removeRow() {
-            const gridContainer = document.getElementById('grid-container');
-            const rows = gridContainer.querySelectorAll('.grid-row');
-
-            if (rows.length > 1) {
-                gridContainer.removeChild(rows[rows.length - 1]);
-            }
-
-            saveGridState();
-            updatePreview();
-            addArrowKeyNavigation();
-        }
-
-        function addColumn() {
-            const rows = document.querySelectorAll('.grid-row');
-
-            rows.forEach(row => {
-                const cell = document.createElement('div');
-                cell.className = 'cell';
-                const input = document.createElement('input');
-                input.setAttribute('type', 'text');
-                input.setAttribute('maxlength', '1');
-                input.addEventListener('input', handleInputChange);
-                cell.appendChild(input);
-                row.appendChild(cell);
-            });
-
-            saveGridState();
-            updatePreview();
-            addArrowKeyNavigation();
-        }
-
-        function removeColumn() {
-            const rows = document.querySelectorAll('.grid-row');
-
-            rows.forEach(row => {
-                const cells = row.querySelectorAll('.cell');
-
-                if (cells.length > 1) {
-                    row.removeChild(cells[cells.length - 1]);
-                }
-            });
-
-            saveGridState();
-            updatePreview();
-            addArrowKeyNavigation();
-        }
-
-        function handleInputChange(event) {
-            const input = event.target;
-            const value = input.value.trim().toUpperCase();
-            if (value.length > 1) {
-                input.value = value.slice(0, 1);
-            }
-
-            saveGridState();
-            updatePreview();
-            addArrowKeyNavigation();
-        }
-
-        function updatePreview() {
-            const preview = document.getElementById('preview');
-
-            // get the grid state from local storage
-            const savedGridJson = localStorage.getItem('gridState');
-            if (!savedGridJson) {
-                preview.textContent = '';
-                return;
-            }
-
-            const savedGrid = JSON.parse(savedGridJson);
-            let previewText = '';
-
-            savedGrid.forEach(row => {
-                row.forEach(cell => {
-                    previewText += cell;
-                });
-                previewText += '\n';
-            });
-
-            preview.textContent = previewText;
-        }
-
-        function saveGridState() {
-            const gridContainer = document.getElementById('grid-container');
-            const rows = gridContainer.querySelectorAll('.grid-row');
-            const matrix = [];
-
-            rows.forEach(row => {
-                const cells = row.querySelectorAll('.cell');
-                const rowValues = [];
-
-                cells.forEach(cell => {
-                    if (cell.querySelector('input').value === '') {
-                        rowValues.push(' ');
-                    }
-                    else {
-                        rowValues.push(cell.querySelector('input').value);
-                    }
-                });
-
-                matrix.push(rowValues);
-            });
-
-            const matrixJson = JSON.stringify(matrix);
-            localStorage.setItem('gridState', matrixJson);
-        }
-
-        function addFrame() {
-
-        }
-
-        function delFrame() {
-
-        }
-
-        function loadFrames() {
-            // frames from local storage needs to be array of grid states
-            const savedFramesJson = localStorage.getItem('frames');
-            if (savedFramesJson) {
-                frames = JSON.parse(savedFramesJson);
-                console.log(frames);
-            }
-        }
-
-        function saveFrames() {
-            const framesJson = JSON.stringify(frames);
-            localStorage.setItem('frames', framesJson);
-        }
-
-        window.onload = function () {
-            const savedGridJson = localStorage.getItem('gridState');
-            if (savedGridJson) {
-                const savedGrid = JSON.parse(savedGridJson);
-                console.log(savedGrid);
-                const gridContainer = document.getElementById('grid-container');
-                gridContainer.innerHTML = '';
-                for (let i = 0; i < savedGrid.length; i++) {
-                    const row = document.createElement('div');
-                    row.className = 'grid-row';
-                    for (let j = 0; j < savedGrid[i].length; j++) {
-                        const cell = document.createElement('div');
-                        cell.className = 'cell';
-                        const input = document.createElement('input');
-                        input.setAttribute('type', 'text');
-                        input.setAttribute('maxlength', '1');
-                        input.addEventListener('input', handleInputChange);
-
-                        if (savedGrid[i][j] === ' ') {
-                            input.value = '';
-                        }
-                        else {
-                            input.value = savedGrid[i][j];
-                        }
-                        cell.appendChild(input);
-                        row.appendChild(cell);
-                    }
-                    gridContainer.appendChild(row);
-                }
-            }
-
-            updatePreview();
-            addArrowKeyNavigation();
-        };
-    </script>
+    <script src="../static/frames.js"></script>
 </body>
 
 </html>
