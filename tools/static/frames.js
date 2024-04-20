@@ -1,12 +1,14 @@
 var totalFrames = 1;
-var currentFrame = 1;
-var frames = [];
+var frameIndex = 1;
+var frames = [{}];
 var delta = {
     x: 0,
     y: 0
 };
 
-var currentFrameElement = null;
+test = [{ grid: ['a', 'a', 'a'], offset_delta: { x: 0, y: 0 } }, {}];
+
+var frameIndexElement = null;
 var totalFramesElement = null;
 
 function addArrowKeyNavigation() {
@@ -65,6 +67,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     startAnimationBtn.addEventListener('click', () => startAnimation());
     stopAnimationBtn.addEventListener('click', () => stopAnimation());
+
+    const offsetDeltaX = document.getElementById('offsetDeltaX');
+    const offsetDeltaY = document.getElementById('offsetDeltaY');
+
+    offsetDeltaX.addEventListener('input', () => saveFrame());
+    offsetDeltaY.addEventListener('input', () => saveFrame());
 });
 
 function clearGrid() {
@@ -172,7 +180,7 @@ function handleInputChange(event) {
 
 function updatePreview() {
     const preview = document.getElementById('preview');
-    const currentGrid = frames[currentFrame - 1];
+    const currentGrid = frames[frameIndex - 1].grid;
 
     let previewText = '';
 
@@ -207,36 +215,40 @@ function saveFrame() {
         currentGrid.push(rowValues);
     });
 
-    frames[currentFrame - 1] = currentGrid;
+    const deltaX = document.getElementById('offsetDeltaX').value;
+    const deltaY = document.getElementById('offsetDeltaY').value;
+    frames[frameIndex - 1].grid = currentGrid;
+    frames[frameIndex - 1].offset_delta = { x: deltaX, y: deltaY };
     saveAllFrames();
 }
 
 function addFrame() {
-    const gridContainer = document.getElementById('grid-container');
-    const rows = gridContainer.querySelectorAll('.grid-row');
-    const currentGrid = [];
+    // const gridContainer = document.getElementById('grid-container');
+    // const rows = gridContainer.querySelectorAll('.grid-row');
+    // const currentGrid = [];
 
-    rows.forEach(row => {
-        const cells = row.querySelectorAll('.cell');
-        const rowValues = [];
+    // rows.forEach(row => {
+    //     const cells = row.querySelectorAll('.cell');
+    //     const rowValues = [];
 
-        cells.forEach(cell => {
-            if (cell.querySelector('input').value === '') {
-                rowValues.push(' ');
-            }
-            else {
-                rowValues.push(cell.querySelector('input').value);
-            }
-        });
+    //     cells.forEach(cell => {
+    //         if (cell.querySelector('input').value === '') {
+    //             rowValues.push(' ');
+    //         }
+    //         else {
+    //             rowValues.push(cell.querySelector('input').value);
+    //         }
+    //     });
 
-        currentGrid.push(rowValues);
-    });
+    //     currentGrid.push(rowValues);
+    // });
+    const currentFrame = frames[frameIndex - 1];
 
-    frames.splice(currentFrame - 1, 0, currentGrid);
-    currentFrame++;
+    frames.splice(frameIndex - 1, 0, currentFrame);
+    frameIndex++;
     totalFrames++;
 
-    currentFrameElement.textContent = currentFrame;
+    frameIndexElement.textContent = frameIndex;
     totalFramesElement.textContent = totalFrames;
 
     console.log(frames);
@@ -251,14 +263,14 @@ function delFrame() {
         return;
     }
 
-    frames.splice(currentFrame - 1, 1);
+    frames.splice(frameIndex - 1, 1);
     totalFrames--;
 
-    if (currentFrame > totalFrames) {
-        currentFrame--;
+    if (frameIndex > totalFrames) {
+        frameIndex--;
     }
 
-    currentFrameElement.textContent = currentFrame;
+    frameIndexElement.textContent = frameIndex;
     totalFramesElement.textContent = totalFrames;
 
     console.log(frames);
@@ -267,35 +279,34 @@ function delFrame() {
 }
 
 function nextFrame() {
-    if (currentFrame >= totalFrames) {
-        currentFrame = 1;
+    if (frameIndex >= totalFrames) {
+        frameIndex = 1;
     }
     else {
-        currentFrame++;
+        frameIndex++;
     }
 
-    currentFrameElement.textContent = currentFrame;
+    frameIndexElement.textContent = frameIndex;
     loadCurrentFrame();
 }
 
 function prevFrame() {
-    if (currentFrame <= 1) {
-        currentFrame = totalFrames;
+    if (frameIndex <= 1) {
+        frameIndex = totalFrames;
     }
     else {
-        currentFrame--;
+        frameIndex--;
     }
 
-    currentFrameElement.textContent = currentFrame;
+    frameIndexElement.textContent = frameIndex;
     loadCurrentFrame();
 }
 
 function loadCurrentFrame() {
     const gridContainer = document.getElementById('grid-container');
-    console.log("Frames: ", frames);
-    const currentGrid = frames[currentFrame - 1];
-    console.log("Current frame idx: ", currentFrame - 1);
+    const currentGrid = frames[frameIndex - 1].grid;
     gridContainer.innerHTML = '';
+
     for (let i = 0; i < currentGrid.length; i++) {
         const row = document.createElement('div');
         row.className = 'grid-row';
@@ -323,6 +334,7 @@ function loadCurrentFrame() {
     updatePreview();
 }
 
+
 function loadAllFrames() {
     // frames from local storage needs to be array of grid states
     const savedFramesJson = localStorage.getItem('frames');
@@ -335,9 +347,9 @@ function loadAllFrames() {
     console.log(frames);
 
     totalFrames = frames.length;
-    currentFrame = 1;
+    frameIndex = 1;
 
-    currentFrameElement.textContent = currentFrame;
+    frameIndexElement.textContent = frameIndex;
     totalFramesElement.textContent = totalFrames;
 }
 
@@ -348,7 +360,7 @@ function saveAllFrames() {
 
 window.onload = function () {
     // get saved frames
-    currentFrameElement = document.getElementById('currentFrame');
+    frameIndexElement = document.getElementById('frameIndex');
     totalFramesElement = document.getElementById('totalFrames');
 
     const savedFramesJson = localStorage.getItem('frames');
@@ -360,7 +372,7 @@ window.onload = function () {
         loadAllFrames();
     }
     else {
-        frames = [[[' ']]];
+        frames = [{ grid: [[' ']], offset_delta: { x: 0, y: 0 } }];
         saveAllFrames();
     }
 
