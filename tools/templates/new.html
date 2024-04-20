@@ -59,13 +59,35 @@
 
 <body class=" my-4">
     <h1 class="text-center mb-4">Asciiman Animator</h1>
+    
     <div class="container d-grid gap-4">
-
+        <div class="accordion card" id="accordionInstructions">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        Instructions
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse"
+                    data-bs-parent="#accordionInstructions">
+                    <div class="accordion-body">
+                        <ul>
+                            <li>Use the controls above to add or remove rows and columns from the grid.</li>
+                            <li>Click on a cell to enter a character.</li>
+                            <li>Use the arrow keys to navigate around the grid.</li>
+                            <li>Use the preview section to see how the grid looks.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="card p-4">
             <h2 class="card-title">
                 Controls
             </h2>
             <div class="card-body d-grid gap-2">
+                <h3>Grid</h3>
                 <div class="row my-auto">
                     <div class="input-group">
                         <span class="input-group-text col-2">Del/Add row</span>
@@ -80,7 +102,34 @@
                         <button class="btn btn-success" id="addColumnBtn"><i class="bi bi-arrow-right"></i></button>
                     </div>
                 </div>
-                <button class="col-2 btn btn-danger" id="clearGridBtn">Clear grid</button>
+
+                <button class="my-4 col-2 btn btn-danger" id="clearGridBtn">Clear grid</button>
+                <h3>Frames</h3>
+                <div class="row my-auto">
+                    <div class="input-group">
+                        <span class="input-group-text col-2">Del/Add frame</span>
+                        <button class="btn btn-danger" id="addFrameBtn"><i class="bi bi-dash"></i></button>
+                        <button class="btn btn-success" id="addFrameBtn"><i class="bi bi-plus"></i></button>
+                    </div>
+                </div>
+                <ul class="pagination" id="frame_pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true"><i class="bi bi-arrow-left"></i></span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true"><i class="bi bi-arrow-right"></i></span>
+                        </a>
+                    </li>
+                </ul>
+
+                <button class="my-4 col-2 btn btn-danger" id="clearGridBtn">Clear all frames</button>
+
             </div>
         </div>
         <div class="card p-4">
@@ -88,43 +137,20 @@
                 Grid
             </h2>
             <div class="card-body">
-                <div class="accordion" id="accordionInstructions">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                Instructions
-                            </button>
-                        </h2>
-                        <div id="collapseOne" class="accordion-collapse collapse"
-                            data-bs-parent="#accordionInstructions">
-                            <div class="accordion-body">
-                                <ul>
-                                    <li>Use the controls above to add or remove rows and columns from the grid.</li>
-                                    <li>Click on a cell to enter a character.</li>
-                                    <li>Use the arrow keys to navigate around the grid.</li>
-                                    <li>Use the preview section to see how the grid looks.</li>
-                                </ul>
-                            </div>
+                <div class="d-flex">
+                    <div id="grid-container">
+                        <div class="grid-row">
+                            <div class="cell"><input type="text" maxlength="1"></div>
                         </div>
                     </div>
                 </div>
-
             </div>
-
-            <div class="d-flex">
-                <div id="grid-container">
-                    <div class="grid-row">
-                        <div class="cell"><input type="text" maxlength="1"></div>
-                    </div>
-                </div>
-            </div>
-
         </div>
         <div class="card p-4">
             <h2 class="card-title">
                 Preview
             </h2>
+            <button class="btn btn-primary col-2" id="">Play animation</button>
             <div class="card-body">
                 <code id="preview">
                 </code>
