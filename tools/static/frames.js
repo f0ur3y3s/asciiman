@@ -60,7 +60,11 @@ document.addEventListener('DOMContentLoaded', () => {
     nextFrameBtn.addEventListener('click', () => nextFrame());
     prevFrameBtn.addEventListener('click', () => prevFrame());
 
-    console.log("delFrameBtn", delFrameBtn);
+    const startAnimationBtn = document.getElementById('startAnimationBtn');
+    const stopAnimationBtn = document.getElementById('stopAnimationBtn');
+
+    startAnimationBtn.addEventListener('click', () => startAnimation());
+    stopAnimationBtn.addEventListener('click', () => stopAnimation());
 });
 
 function clearGrid() {
@@ -70,7 +74,6 @@ function clearGrid() {
         cell.value = '';
     });
 
-    // saveGridState();
     saveFrame();
     updatePreview();
     addArrowKeyNavigation();
@@ -183,31 +186,6 @@ function updatePreview() {
     preview.textContent = previewText;
 }
 
-// function saveGridState() {
-//     const gridContainer = document.getElementById('grid-container');
-//     const rows = gridContainer.querySelectorAll('.grid-row');
-//     const matrix = [];
-
-//     rows.forEach(row => {
-//         const cells = row.querySelectorAll('.cell');
-//         const rowValues = [];
-
-//         cells.forEach(cell => {
-//             if (cell.querySelector('input').value === '') {
-//                 rowValues.push(' ');
-//             }
-//             else {
-//                 rowValues.push(cell.querySelector('input').value);
-//             }
-//         });
-
-//         matrix.push(rowValues);
-//     });
-
-//     const matrixJson = JSON.stringify(matrix);
-//     localStorage.setItem('gridState', matrixJson);
-// }
-
 function saveFrame() {
     const gridContainer = document.getElementById('grid-container');
     const rows = gridContainer.querySelectorAll('.grid-row');
@@ -254,8 +232,6 @@ function addFrame() {
         currentGrid.push(rowValues);
     });
 
-    clearGrid();
-
     frames.splice(currentFrame - 1, 0, currentGrid);
     currentFrame++;
     totalFrames++;
@@ -265,6 +241,7 @@ function addFrame() {
 
     console.log(frames);
     saveAllFrames();
+    loadCurrentFrame();
 }
 
 function delFrame() {
@@ -286,29 +263,30 @@ function delFrame() {
 
     console.log(frames);
     saveAllFrames();
+    loadCurrentFrame();
 }
 
 function nextFrame() {
     if (currentFrame >= totalFrames) {
-        return;
+        currentFrame = 1;
+    }
+    else {
+        currentFrame++;
     }
 
-    currentFrame++;
     currentFrameElement.textContent = currentFrame;
-
-    // load the frame into the grid
     loadCurrentFrame();
 }
 
 function prevFrame() {
     if (currentFrame <= 1) {
-        return;
+        currentFrame = totalFrames;
+    }
+    else {
+        currentFrame--;
     }
 
-    currentFrame--;
     currentFrameElement.textContent = currentFrame;
-
-    // load the frame into the grid
     loadCurrentFrame();
 }
 
@@ -340,6 +318,9 @@ function loadCurrentFrame() {
         }
         gridContainer.appendChild(row);
     }
+
+    addArrowKeyNavigation();
+    updatePreview();
 }
 
 function loadAllFrames() {
@@ -383,7 +364,17 @@ window.onload = function () {
         saveAllFrames();
     }
 
-    // updatePreview();
     addArrowKeyNavigation();
     loadCurrentFrame();
 };
+
+var animationInterval = null;
+
+function startAnimation() {
+    const animationTime = document.getElementById('animationTime').value;
+    animationInterval = setInterval(nextFrame, animationTime);
+}
+
+function stopAnimation() {
+    clearInterval(animationInterval);
+}

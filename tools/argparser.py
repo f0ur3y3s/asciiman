@@ -21,7 +21,7 @@ def parse_args() -> Union[tuple[str, int], None]:
     Returns:
         Union[tuple[str, int], None]: Tuple of (IP: str, Port: int)
     """
-    parser = ArgumentParser(description="BSLE v4B Capstone Client")
+    parser = ArgumentParser(description="Webserver to serve animation tool.")
     parser.add_argument(
         "--ip",
         "-i",

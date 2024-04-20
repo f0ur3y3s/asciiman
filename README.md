@@ -1,31 +1,55 @@
-- [Ascii Stickman](#ascii-stickman)
-- [Screen](#screen)
+- [Asciiman](#asciiman)
+  - [Animations](#animations)
+    - [Animation tool](#animation-tool)
+      - [Options](#options)
+  - [Screen](#screen)
   - [Layers](#layers)
-- [Character](#character)
-  - [Idle](#idle)
-  - [Right walking](#right-walking)
-  - [Left walking](#left-walking)
-  - [Jump Prep](#jump-prep)
-  - [Mid air jump idle](#mid-air-jump-idle)
-  - [Mid air jump right](#mid-air-jump-right)
-  - [Mid air jump left](#mid-air-jump-left)
-  - [Attack](#attack)
-  - [Holding heavy weapon](#holding-heavy-weapon)
 - [Future Work](#future-work)
-- [Animation File Format](#animation-file-format)
-  - [Requirements](#requirements)
-  - [File](#file)
-  - [File Format Example](#file-format-example)
-- [Character matrix](#character-matrix)
-- [Animation format](#animation-format)
-  - [Frame 1](#frame-1)
-  - [Frame 2](#frame-2)
 
-# Ascii Stickman
+# Asciiman
 
-# Screen
+Asciiman is a game engine that uses the terminal to render a game.
 
-The screen is made in the terminal.
+## Animations
+
+Entities can hold multiple animations, of which can be cycled through.
+
+The internal representation is a circular singly linked list of the different states.
+
+### Animation tool
+
+There is an animation tool that can be used to create animations for entities. The tool is a web-based tool that can be used to create animations for entities.
+
+Prior to running the tool, you must install the Flask library:
+
+```bash
+pip3 install flask
+```
+
+To run the tool, use the following command from the project root:
+
+```bash
+python3 ./src/anim_tool.py
+```
+
+The tool will be available at `http://localhost:8000`.
+
+#### Options
+
+```bash
+usage: anim_tool.py [-h] [--ip IP] [--port PORT]
+
+Webserver to serve animation tool.
+
+options:
+  -h, --help            show this help message and exit
+  --ip IP, -i IP        IP the server will listen on (default:localhost)
+  --port PORT, -p PORT  Port number of the server (default: 8000)
+```
+
+## Screen
+
+The screen is made in the terminal and operates by "cooking" and "uncooking" the terminal to and from raw mode.
 
 Any update to the screen is made with a position-based update instead of flushing and redrawing the whole screen.
 
@@ -36,273 +60,16 @@ Player representation is passed as a matrix to the screen, then the screen will 
 
 ## Layers
 
-The rendering order is as follows:
+Although not implemented yet, I plan on adding layer support to the game "world" and to help rendering.
+
+The rendering order would be as follows:
 
 - Background
 - Player
 - Foreground
 
-# Character
-
-## Idle
-
-```
- o
-/|\
-/ \
-```
-
-For the animations, could create a circularly linked list of the different states.
-
-Hold the animation csll in an singly linked list with a key loop function for the walking and idle animations. This allows multiple animation csll to be held by the player
-
-## Right walking
-
-original four
-
-```
- o
-/|\
-/ \
- o
-/|\
- >\
- o
-/|\
- |\
- o
-/|\
- |>
-```
-
-extended ascii with wchar
-
-```
- o
-/|\
-/ \
- o
-/|\
- ┘\
- o
-/|\
- |\
- o
-/|\
- |┘
-```
-
-extended set
-
-```
- o
-/|\
-/ \
- o
-/|\
- >\
- o
-/|\
- |\
- o
-/|\
-/ \
- o
-/|\
-/ >
- o
-/|\
- |>
-```
-
-## Left walking
-
-```
- o
-/|\
-/ \
- o
-/|\
-/<
- o
-/|\
-/|
- o
-/|\
-<|
-```
-extended ascii
-
-```
- o
-/|\
-/ \
- o
-/|\
-/└
- o
-/|\
-/|
- o
-/|\
-└|
-```
-
-## Jump Prep
-
-```
- o
-/|\
-/ \
-
-_o_
-<'>
-
-\o/
-<'>
-```
-
-## Mid air jump idle
-
-```
-\o/
- |
-/ \
-```
-
-## Mid air jump right
-
-```
-\o/
- )
-/┘
-```
-
-## Mid air jump left
-
-```
-\o/
- (
- └\
-```
-
-## Attack
-
-```
- o
-`)\
-/┘
-```
-
-## Holding heavy weapon
-
-```
-     /\
-    / /
- o_/)/
- \/
-/ \
-```
 
 # Future Work
 
 - Create file format to allow new icons and animation frames
 - Abstract player type to be an entity type
-
-# Animation File Format
-
-## Requirements
-
-- entity name
-- size of entity as x,y
-- initial state of entity as full matrix representation
-- number of possible animations
-- animation cycles
-
-## File
-
-- needs to be txt editable
-
-## File Format Example
-
-NAME player
-SIZE 3,3
-INIT
-S
- o
-/|\
-/ \
-E
-NUM_ANIM 3
-ANIM0
-S
- o
-/|\
-/ \
-E
-ANIM1
-ANIM2
-
-# Character matrix
-
-variable size, 5x4 for example
-
-```
-|     |     |     |     |     |     |
-| 0,0 | 1,0 | 2,0 | 3,0 | 4,0 | 5,0 |
-|_____|_____|_____|_____|_____|_____|
-|     |     |     |     |     |     |
-| 0,1 | 1,1 | 2,1 | 3,1 | 4,1 | 5,1 |
-|_____|_____|_____|_____|_____|_____|
-|     |     |     |     |     |     |
-| 0,2 | 1,2 | 2,2 | 3,2 | 4,2 | 5,2 |
-|_____|_____|_____|_____|_____|_____|
-|     |     |     |     |     |     |
-| 0,3 | 1,3 | 2,3 | 3,3 | 4,3 | 5,3 |
-|_____|_____|_____|_____|_____|_____|
-|     |     |     |     |     |     |
-| 0,4 | 1,4 | 2,4 | 3,4 | 4,4 | 5,4 |
-|_____|_____|_____|_____|_____|_____|
-```
-
-# Animation format
-
-## Frame 1
-```
-TARGET 1,1 - 2,2
-|     |     |     |     |     |     |
-| 0,0 | 1,0 | 2,0 | 3,0 | 4,0 | 5,0 |
-|_____|_____|_____|_____|_____|_____|
-|     |     |     |     |     |     |
-| 0,1 |  X  |  X  | 3,1 | 4,1 | 5,1 |
-|_____|_____|_____|_____|_____|_____|
-|     |     |     |     |     |     |
-| 0,2 |  X  |  X  | 3,2 | 4,2 | 5,2 |
-|_____|_____|_____|_____|_____|_____|
-|     |     |     |     |     |     |
-| 0,3 | 1,3 | 2,3 | 3,3 | 4,3 | 5,3 |
-|_____|_____|_____|_____|_____|_____|
-|     |     |     |     |     |     |
-| 0,4 | 1,4 | 2,4 | 3,4 | 4,4 | 5,4 |
-|_____|_____|_____|_____|_____|_____|
-```
-
-## Frame 2
-```
-TARGET 0,3 - 5,4
-|     |     |     |     |     |     |
-| 0,0 | 1,0 | 2,0 | 3,0 | 4,0 | 5,0 |
-|_____|_____|_____|_____|_____|_____|
-|     |     |     |     |     |     |
-| 0,1 |  X  |  X  | 3,1 | 4,1 | 5,1 |
-|_____|_____|_____|_____|_____|_____|
-|     |     |     |     |     |     |
-| 0,2 |  X  |  X  | 3,2 | 4,2 | 5,2 |
-|_____|_____|_____|_____|_____|_____|
-|     |     |     |     |     |     |
-|  X  |  X  |  X  |  X  |  X  |  X  |
-|_____|_____|_____|_____|_____|_____|
-|     |     |     |     |     |     |
-|  X  |  X  |  X  |  X  |  X  |  X  |
-|_____|_____|_____|_____|_____|_____|
-```
