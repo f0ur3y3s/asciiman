@@ -217,32 +217,15 @@ function saveFrame() {
 
     const deltaX = document.getElementById('offsetDeltaX').value;
     const deltaY = document.getElementById('offsetDeltaY').value;
+
+    console.log("saving frame", frameIndex - 1, currentGrid, deltaX, deltaY);
     frames[frameIndex - 1].grid = currentGrid;
     frames[frameIndex - 1].offset_delta = { x: deltaX, y: deltaY };
     saveAllFrames();
 }
 
 function addFrame() {
-    // const gridContainer = document.getElementById('grid-container');
-    // const rows = gridContainer.querySelectorAll('.grid-row');
-    // const currentGrid = [];
-
-    // rows.forEach(row => {
-    //     const cells = row.querySelectorAll('.cell');
-    //     const rowValues = [];
-
-    //     cells.forEach(cell => {
-    //         if (cell.querySelector('input').value === '') {
-    //             rowValues.push(' ');
-    //         }
-    //         else {
-    //             rowValues.push(cell.querySelector('input').value);
-    //         }
-    //     });
-
-    //     currentGrid.push(rowValues);
-    // });
-    const currentFrame = frames[frameIndex - 1];
+    const currentFrame = JSON.parse(JSON.stringify(frames[frameIndex - 1]));
 
     frames.splice(frameIndex - 1, 0, currentFrame);
     frameIndex++;
@@ -359,7 +342,6 @@ function saveAllFrames() {
 }
 
 window.onload = function () {
-    // get saved frames
     frameIndexElement = document.getElementById('frameIndex');
     totalFramesElement = document.getElementById('totalFrames');
 
@@ -373,6 +355,8 @@ window.onload = function () {
     }
     else {
         frames = [{ grid: [[' ']], offset_delta: { x: 0, y: 0 } }];
+        frameIndexElement.textContent = frameIndex;
+        totalFramesElement.textContent = totalFrames;
         saveAllFrames();
     }
 
